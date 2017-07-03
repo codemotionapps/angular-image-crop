@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.3",
   "author": {
     "name": "Alex Kaul",
     "email": "alexkaul@googlemail.com"
@@ -48,6 +48,6 @@
     "angular": ">=1.4.0"
   },
   "dependencies": {
-    "@codemotion/color-thief": "2.0.2"
+    "@codemotion/color-thief": "2.0.5"
   }
 }
