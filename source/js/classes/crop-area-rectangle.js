@@ -1,6 +1,5 @@
-'use strict';
-
-angular.module('uiCropper').factory('cropAreaRectangle', ['cropArea', function (CropArea) {
+cropAreaRectangle.$inject = [`cropArea`];
+function cropAreaRectangle(CropArea){
     var CropAreaRectangle = function () {
         CropArea.apply(this, arguments);
 
@@ -247,4 +246,6 @@ angular.module('uiCropper').factory('cropAreaRectangle', ['cropArea', function (
     };
 
     return CropAreaRectangle;
-}]);
+}
+
+module.exports = cropAreaRectangle;

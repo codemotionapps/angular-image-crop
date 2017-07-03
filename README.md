@@ -1,4 +1,4 @@
-## uiCropper
+## angular-image-cropper
 
 [![Build Status](https://travis-ci.org/CrackerakiUA/ui-cropper.svg?branch=master)](https://travis-ci.org/CrackerakiUA/ui-cropper)
 [![GitHub release](https://img.shields.io/github/release/CrackerakiUA/ui-cropper.svg)](https://github.com/CrackerakiUA/ui-cropper) [![Join the chat at https://gitter.im/CrackerakiUA/ui-cropper](https://badges.gitter.im/CrackerakiUA/ui-cropper.svg)](https://gitter.im/CrackerakiUA/ui-cropper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -33,14 +33,8 @@ If you want to contribute, please join our [gitter chat](https://gitter.im/Crack
 #### Download directly
 [Download ui-cropper](https://github.com/CrackerakiUA/ui-cropper/archive/master.zip) files from GitHub
 
-#### Bower
-	bower install ui-cropper
-
-#### NPM
-	npm install ui-cropper
-
-#### Meteor
-	meteor npm install --save ui-cropper
+#### npm
+	npm install -D -E @codemotion/angular-image-cropper
 
 ## How to Use
 

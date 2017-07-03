@@ -1,6 +1,5 @@
-'use strict';
-
-angular.module('uiCropper').directive('uiCropper', ['$timeout', 'cropHost', 'cropPubSub', function ($timeout, CropHost, CropPubSub) {
+uiCropper.$inject = [`$timeout`, `cropHost`, `cropPubSub`];
+function uiCropper($timeout, CropHost, CropPubSub){
     return {
         restrict: 'E',
         scope: {
@@ -338,4 +337,6 @@ angular.module('uiCropper').directive('uiCropper', ['$timeout', 'cropHost', 'cro
             });
         }
     };
-}]);
+}
+
+module.exports = uiCropper;

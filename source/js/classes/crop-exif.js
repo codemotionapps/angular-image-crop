@@ -1,10 +1,8 @@
 /**
  * EXIF service is based on the exif-js library (https://github.com/jseidelin/exif-js)
  */
-'use strict';
-/*eslint-disable */
-//Disable eslint as this is a 3rd party lib
-angular.module('uiCropper').service('cropEXIF', [function () {
+
+function cropEXIF(){
     var debug = false;
 
     var ExifTags = this.Tags = {
@@ -291,21 +289,11 @@ angular.module('uiCropper').service('cropEXIF', [function () {
         }
     };
 
-    function addEvent(element, event, handler) {
-        if (element.addEventListener) {
-            element.addEventListener(event, handler, false);
-        } else if (element.attachEvent) {
-            element.attachEvent('on' + event, handler);
-        }
-    }
-
     function imageHasData(img) {
         return !!(img.exifdata);
     }
 
-
-    function base64ToArrayBuffer(base64, contentType) {
-        contentType = contentType || base64.match(/^data\:([^\;]+)\;base64,/mi)[1] || ''; // e.g. 'data:image/jpeg;base64,...' => 'image/jpeg'
+    function base64ToArrayBuffer(base64) {
         base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
         var binary = atob(base64);
         var len = binary.length;
@@ -321,7 +309,7 @@ angular.module('uiCropper').service('cropEXIF', [function () {
         var http = new XMLHttpRequest();
         http.open('GET', url, true);
         http.responseType = 'blob';
-        http.onload = function (e) {
+        http.onload = function () {
             if (this.status === 200 || this.status === 0) {
                 callback(this.response);
             }
@@ -369,7 +357,7 @@ angular.module('uiCropper').service('cropEXIF', [function () {
             http.responseType = 'arraybuffer';
             try {
                 http.send(null);
-            } catch(e) {
+            } catch(e) { //eslint-disable-line no-empty
             }
         } else if (window.FileReader && (img instanceof window.Blob || img instanceof window.File)) {
             fileReader.onload = function (e) {
@@ -506,14 +494,13 @@ angular.module('uiCropper').service('cropEXIF', [function () {
     function readIPTCData(file, startOffset, sectionLength) {
         var dataView = new DataView(file);
         var data = {};
-        var fieldValue, fieldName, dataSize, segmentType, segmentSize;
+        var fieldValue, fieldName, dataSize, segmentType;
         var segmentStartPos = startOffset;
         while (segmentStartPos < startOffset + sectionLength) {
             if (dataView.getUint8(segmentStartPos) === 0x1C && dataView.getUint8(segmentStartPos + 1) === 0x02) {
                 segmentType = dataView.getUint8(segmentStartPos + 2);
                 if (segmentType in IptcFieldMap) {
                     dataSize = dataView.getInt16(segmentStartPos + 3);
-                    segmentSize = dataSize + 5;
                     fieldName = IptcFieldMap[segmentType];
                     fieldValue = getStringFromDB(dataView, segmentStartPos + 5, dataSize);
                     // Check if we already stored a value with this name
@@ -813,4 +800,6 @@ angular.module('uiCropper').service('cropEXIF', [function () {
     this.readFromBinaryFile = function (file) {
         return findEXIFinJPEG(file);
     };
-}]);
+}
+
+module.exports = cropEXIF;

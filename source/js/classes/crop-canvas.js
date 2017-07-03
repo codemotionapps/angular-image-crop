@@ -1,6 +1,4 @@
-'use strict';
-
-angular.module('uiCropper').factory('cropCanvas', [function() {
+function cropCanvas(){
     // Shape = Array of [x,y]; [0, 0] - center
     var shapeArrowNW = [
         [-0.5, -2],
@@ -194,6 +192,7 @@ angular.module('uiCropper').factory('cropCanvas', [function() {
 
             ctx.restore();
         };
-
     };
-}]);
+}
+
+module.exports = cropCanvas;

@@ -1,6 +1,14 @@
-'use strict';
+const ColorThief = require(`@codemotion/color-thief`);
 
-angular.module('uiCropper').factory('cropHost', ['$document', '$q', 'cropAreaCircle', 'cropAreaSquare', 'cropAreaRectangle', 'cropEXIF', function ($document, $q, CropAreaCircle, CropAreaSquare, CropAreaRectangle, cropEXIF) {
+cropHost.$inject = [
+    `$document`,
+    `$q`,
+    `cropAreaCircle`,
+    `cropAreaSquare`,
+    `cropAreaRectangle`,
+    `cropEXIF`
+];
+function cropHost($document, $q, CropAreaCircle, CropAreaSquare, CropAreaRectangle, cropEXIF){
     /* STATIC FUNCTIONS */
     var colorPaletteLength = 8;
     
@@ -850,4 +858,6 @@ angular.module('uiCropper').factory('cropHost', ['$document', '$q', 'cropAreaCir
             elCanvas.remove();
         };
     };
-}]);
+}
+
+module.exports = cropHost;
