@@ -1,35 +1,13 @@
 {
     "env": {
         "browser": true,
-        "mocha": true,
-        "node": true,
+        "commonjs": true,
         "es6": true
     },
     "globals": {
         "angular": true
     },
-    "extends": "eslint:recommended",
+    "extends": "dimitarnestorov",
     "rules": {
-        "indent": [
-            "error",
-            4,
-            { "SwitchCase": 1 }
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-console": ["off"],
-        "curly": ["error"],
-        "eqeqeq": ["error"],
-        "wrap-iife": ["error"],
-        "no-caller": ["error"],
-        "no-extend-native": ["error"],
-        "new-cap": ["error"],
-        "no-use-before-define": ["error"]
     }
 }

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.0",
   "author": {
     "name": "Alex Kaul",
     "email": "alexkaul@googlemail.com"
@@ -32,7 +32,7 @@
   "name": "@codemotion/angular-image-cropper",
   "prettyName": "uiCropper",
   "description": "Image crop directive for AngularJS, square, circle and rectangle areas. Working aspect. Features like export array and more comming.",
-  "main": "index.js",
+  "main": "source/js/init.js",
   "license": "MIT",
   "homepage": "https://crackerakiua.github.io/ui-cropper/",
   "repository": {
@@ -41,7 +41,8 @@
   },
   "devDependencies": {
     "ajv": "^5.2.0",
-    "eslint": "4.7.2"
+    "eslint": "4.7.2",
+    "eslint-config-dimitarnestorov": "1.0.11"
   },
   "peerDependencies": {
     "@codemotion/canvas-to-blob": "1.0.0",

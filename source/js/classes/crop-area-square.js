@@ -1,320 +1,323 @@
 cropAreaSquare.$inject = [`cropArea`];
 function cropAreaSquare(CropArea){
-    var CropAreaSquare = function() {
-        CropArea.apply(this, arguments);
+	const CropAreaSquare = function(){
+		CropArea.apply(this, arguments);
 
-        this._resizeCtrlBaseRadius = 15;
-        this._resizeCtrlNormalRatio = 0.6;
-        this._resizeCtrlHoverRatio = 0.70;
-        this._iconMoveNormalRatio = 0.9;
-        this._iconMoveHoverRatio = 1.2;
+		this._resizeCtrlBaseRadius = 15;
+		this._resizeCtrlNormalRatio = 0.6;
+		this._resizeCtrlHoverRatio = 0.70;
+		this._iconMoveNormalRatio = 0.9;
+		this._iconMoveHoverRatio = 1.2;
 
-        this._resizeCtrlNormalRadius = this._resizeCtrlBaseRadius * this._resizeCtrlNormalRatio;
-        this._resizeCtrlHoverRadius = this._resizeCtrlBaseRadius * this._resizeCtrlHoverRatio;
+		this._resizeCtrlNormalRadius = this._resizeCtrlBaseRadius * this._resizeCtrlNormalRatio;
+		this._resizeCtrlHoverRadius = this._resizeCtrlBaseRadius * this._resizeCtrlHoverRatio;
 
-        this._posDragStartX = 0;
-        this._posDragStartY = 0;
-        this._posResizeStartX = 0;
-        this._posResizeStartY = 0;
-        this._posResizeStartSize = 0;
+		this._posDragStartX = 0;
+		this._posDragStartY = 0;
+		this._posResizeStartX = 0;
+		this._posResizeStartY = 0;
+		this._posResizeStartSize = 0;
 
-        this._resizeCtrlIsHover = -1;
-        this._areaIsHover = false;
-        this._resizeCtrlIsDragging = -1;
-        this._areaIsDragging = false;
-    };
+		this._resizeCtrlIsHover = -1;
+		this._areaIsHover = false;
+		this._resizeCtrlIsDragging = -1;
+		this._areaIsDragging = false;
+	};
 
-    CropAreaSquare.prototype = new CropArea();
+	CropAreaSquare.prototype = new CropArea();
 
-    CropAreaSquare.prototype.getType = function() {
-        return 'square';
-    };
+	CropAreaSquare.prototype.getType = function(){
+		return `square`;
+	};
 
-    CropAreaSquare.prototype._calcSquareCorners = function() {
-        var size = this.getSize(),
-            se = this.getSouthEastBound();
-        return [
-            [size.x, size.y], //northwest
-            [se.x, size.y], //northeast
-            [size.x, se.y], //southwest
-            [se.x, se.y] //southeast
-        ];
-    };
+	CropAreaSquare.prototype._calcSquareCorners = function(){
+		const size = this.getSize();
+		const se = this.getSouthEastBound();
 
-    CropAreaSquare.prototype._calcSquareDimensions = function() {
-        var size = this.getSize(),
-            se = this.getSouthEastBound();
-        return {
-            left: size.x,
-            top: size.y,
-            right: se.x,
-            bottom: se.y
-        };
-    };
+		return [
+			[size.x, size.y], //northwest
+			[se.x, size.y], //northeast
+			[size.x, se.y], //southwest
+			[se.x, se.y] //southeast
+		];
+	};
 
-    CropAreaSquare.prototype._isCoordWithinArea = function(coord) {
-        var squareDimensions = this._calcSquareDimensions();
-        return (coord[0] >= squareDimensions.left && coord[0] <= squareDimensions.right && coord[1] >= squareDimensions.top && coord[1] <= squareDimensions.bottom);
-    };
+	CropAreaSquare.prototype._calcSquareDimensions = function(){
+		const size = this.getSize();
+		const se = this.getSouthEastBound();
 
-    CropAreaSquare.prototype._isCoordWithinResizeCtrl = function(coord) {
-        var resizeIconsCenterCoords = this._calcSquareCorners();
-        var res = -1;
-        for (var i = 0, len = resizeIconsCenterCoords.length; i < len; i++) {
-            var resizeIconCenterCoords = resizeIconsCenterCoords[i];
-            if (coord[0] > resizeIconCenterCoords[0] - this._resizeCtrlHoverRadius && coord[0] < resizeIconCenterCoords[0] + this._resizeCtrlHoverRadius &&
-                coord[1] > resizeIconCenterCoords[1] - this._resizeCtrlHoverRadius && coord[1] < resizeIconCenterCoords[1] + this._resizeCtrlHoverRadius) {
-                res = i;
-                break;
-            }
-        }
-        return res;
-    };
+		return {
+			left: size.x,
+			top: size.y,
+			right: se.x,
+			bottom: se.y
+		};
+	};
 
-    CropAreaSquare.prototype._drawArea = function(ctx, centerCoords, size) {
-        ctx.rect(size.x, size.y, size.w, size.h);
-    };
+	CropAreaSquare.prototype._isCoordWithinArea = function(coord){
+		const squareDimensions = this._calcSquareDimensions();
+		return coord[0] >= squareDimensions.left && coord[0] <= squareDimensions.right && coord[1] >= squareDimensions.top && coord[1] <= squareDimensions.bottom;
+	};
 
-    CropAreaSquare.prototype.draw = function() {
-        CropArea.prototype.draw.apply(this, arguments);
+	CropAreaSquare.prototype._isCoordWithinResizeCtrl = function(coord){
+		const resizeIconsCenterCoords = this._calcSquareCorners();
+		let res = -1;
+		for(let i = 0, len = resizeIconsCenterCoords.length; i < len; i++){
+			const resizeIconCenterCoords = resizeIconsCenterCoords[i];
+			if(coord[0] > resizeIconCenterCoords[0] - this._resizeCtrlHoverRadius && coord[0] < resizeIconCenterCoords[0] + this._resizeCtrlHoverRadius &&
+				coord[1] > resizeIconCenterCoords[1] - this._resizeCtrlHoverRadius && coord[1] < resizeIconCenterCoords[1] + this._resizeCtrlHoverRadius){
+				res = i;
+				break;
+			}
+		}
+		return res;
+	};
 
-        // draw move icon
-        var center = this.getCenterPoint();
-        this._cropCanvas.drawIconMove([center.x, center.y], this._areaIsHover ? this._iconMoveHoverRatio : this._iconMoveNormalRatio);
+	CropAreaSquare.prototype._drawArea = function(ctx, _, size){
+		ctx.rect(size.x, size.y, size.w, size.h);
+	};
 
-        // draw resize cubes
-        var resizeIconsCenterCoords = this._calcSquareCorners();
-        for (var i = 0, len = resizeIconsCenterCoords.length; i < len; i++) {
-            var resizeIconCenterCoords = resizeIconsCenterCoords[i];
-            this._cropCanvas.drawIconResizeBoxBase(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover === i ? this._resizeCtrlHoverRatio : this._resizeCtrlNormalRatio);
-        }
-    };
+	CropAreaSquare.prototype.draw = function(){
+		CropArea.prototype.draw.apply(this, arguments);
 
-    CropAreaSquare.prototype._clampPoint = function(x, y) {
-        var size = this._ctx.canvas.width;
+		// draw move icon
+		const center = this.getCenterPoint();
+		this._cropCanvas.drawIconMove([center.x, center.y], this._areaIsHover ? this._iconMoveHoverRatio : this._iconMoveNormalRatio);
 
-        if(x < 0) {
-            y -= Math.abs(x);
-            x = 0;
-        }
+		// draw resize cubes
+		const resizeIconsCenterCoords = this._calcSquareCorners();
+		for(let i = 0, len = resizeIconsCenterCoords.length; i < len; i++){
+			const resizeIconCenterCoords = resizeIconsCenterCoords[i];
+			this._cropCanvas.drawIconResizeBoxBase(resizeIconCenterCoords, this._resizeCtrlBaseRadius, this._resizeCtrlIsHover === i ? this._resizeCtrlHoverRatio : this._resizeCtrlNormalRatio);
+		}
+	};
 
-        if(y < 0) {
-            x -= Math.abs(y);
-            y = 0;
-        }
+	CropAreaSquare.prototype._clampPoint = function(x, y){
+		const size = this._ctx.canvas.width;
 
-        if(x > size) {
-            y -= (size - x);
-            x = size;
-        }
+		if(x < 0){
+			y -= Math.abs(x);
+			x = 0;
+		}
 
-        if(y > size) {
-            x -= (size - y);
-            y = size;
-        }
+		if(y < 0){
+			x -= Math.abs(y);
+			y = 0;
+		}
 
-        return {
-            x: x,
-            y: y
-        };
-    };
+		if(x > size){
+			y -= size - x;
+			x = size;
+		}
 
-    CropAreaSquare.prototype.processMouseMove = function(mouseCurX, mouseCurY) {
-        var cursor = 'default';
-        var res = false;
+		if(y > size){
+			x -= size - y;
+			y = size;
+		}
 
-        this._resizeCtrlIsHover = -1;
-        this._areaIsHover = false;
+		return {
+			x,
+			y
+		};
+	};
 
-        if (this._areaIsDragging) {
-            this.setCenterPointOnMove({
-                x: mouseCurX - this._posDragStartX,
-                y: mouseCurY - this._posDragStartY
-            });
-            this._areaIsHover = true;
-            cursor = 'move';
-            res = true;
-            this._events.trigger('area-move');
-        } else if (this._resizeCtrlIsDragging > -1) {
-            var xMulti, yMulti;
-            switch (this._resizeCtrlIsDragging) {
-                case 0: // Top Left
-                    xMulti = -1;
-                    yMulti = -1;
-                    cursor = 'nwse-resize';
-                    break;
-                case 1: // Top Right
-                    xMulti = 1;
-                    yMulti = -1;
-                    cursor = 'nesw-resize';
-                    break;
-                case 2: // Bottom Left
-                    xMulti = -1;
-                    yMulti = 1;
-                    cursor = 'nesw-resize';
-                    break;
-                case 3: // Bottom Right
-                    xMulti = 1;
-                    yMulti = 1;
-                    cursor = 'nwse-resize';
-                    break;
-            }
-            var iFX = (mouseCurX - this._posResizeStartX) * xMulti,
-                iFY = (mouseCurY - this._posResizeStartY) * yMulti,
-                iFR;
-            if (iFX > iFY) {
-                iFR = this._posResizeStartSize.w + iFY;
-            } else {
-                iFR = this._posResizeStartSize.w + iFX;
-            }
-            var newSize = Math.max(this._minSize.w, iFR),
-                newNO = {},
-                newSE = {},
-                newSO = {},
-                newNE = {},
-                s = this.getSize(),
-                se = this.getSouthEastBound();
+	CropAreaSquare.prototype.processMouseMove = function(mouseCurX, mouseCurY){
+		let cursor = `default`;
+		let res = false;
 
-            switch (this._resizeCtrlIsDragging) {
-                case 0: // Top Left
-                    newNO.x = se.x - newSize;
-                    newNO.y = se.y - newSize;
+		this._resizeCtrlIsHover = -1;
+		this._areaIsHover = false;
 
-                    newNO = this._clampPoint(newNO.x, newNO.y);
+		if(this._areaIsDragging){
+			this.setCenterPointOnMove({
+				x: mouseCurX - this._posDragStartX,
+				y: mouseCurY - this._posDragStartY
+			});
+			this._areaIsHover = true;
+			cursor = `move`;
+			res = true;
+			this._events.trigger(`area-move`);
+		}else if(this._resizeCtrlIsDragging > -1){
+			let xMulti;
+			let yMulti;
 
-                    this.setSizeByCorners(newNO, {
-                        x: se.x,
-                        y: se.y
-                    });
+			switch(this._resizeCtrlIsDragging){
+				case 0: // Top Left
+					xMulti = -1;
+					yMulti = -1;
+					cursor = `nwse-resize`;
+					break;
+				case 1: // Top Right
+					xMulti = 1;
+					yMulti = -1;
+					cursor = `nesw-resize`;
+					break;
+				case 2: // Bottom Left
+					xMulti = -1;
+					yMulti = 1;
+					cursor = `nesw-resize`;
+					break;
+				case 3: // Bottom Right
+					xMulti = 1;
+					yMulti = 1;
+					cursor = `nwse-resize`;
+					break;
+			}
+			const iFX = (mouseCurX - this._posResizeStartX) * xMulti;
+			const iFY = (mouseCurY - this._posResizeStartY) * yMulti;
+			let iFR;
+			if(iFX > iFY){
+				iFR = this._posResizeStartSize.w + iFY;
+			}else{
+				iFR = this._posResizeStartSize.w + iFX;
+			}
+			const newSize = Math.max(this._minSize.w, iFR);
+			let newNO = {};
+			let newSE = {};
+			let newSO = {};
+			let newNE = {};
+			const s = this.getSize();
+			const se = this.getSouthEastBound();
 
-                    cursor = 'nwse-resize';
-                    break;
-                case 1: // Top Right
+			switch(this._resizeCtrlIsDragging){
+				case 0: // Top Left
+					newNO.x = se.x - newSize;
+					newNO.y = se.y - newSize;
 
-                    newNE.x = s.x + newSize;
-                    newNE.y = se.y - newSize;
+					newNO = this._clampPoint(newNO.x, newNO.y);
 
-                    newNE = this._clampPoint(newNE.x, newNE.y);
+					this.setSizeByCorners(newNO, {
+						x: se.x,
+						y: se.y
+					});
 
-                    this.setSizeByCorners({
-                        x: s.x,
-                        y: newNE.y
-                    }, {
-                        x: newNE.x,
-                        y: se.y
-                    });
+					cursor = `nwse-resize`;
+					break;
+				case 1: // Top Right
 
-                    cursor = 'nesw-resize';
-                    break;
-                case 2: // Bottom Left
-                    newSO.x = se.x - newSize;
-                    newSO.y = s.y + newSize;
+					newNE.x = s.x + newSize;
+					newNE.y = se.y - newSize;
 
-                    newSO = this._clampPoint(newSO.x, newSO.y);
+					newNE = this._clampPoint(newNE.x, newNE.y);
 
-                    this.setSizeByCorners({
-                        x: newSO.x,
-                        y: s.y
-                    }, {
-                        x: se.x,
-                        y: newSO.y
-                    });
+					this.setSizeByCorners({
+						x: s.x,
+						y: newNE.y
+					}, {
+						x: newNE.x,
+						y: se.y
+					});
 
-                    cursor = 'nesw-resize';
-                    break;
-                case 3: // Bottom Right
+					cursor = `nesw-resize`;
+					break;
+				case 2: // Bottom Left
+					newSO.x = se.x - newSize;
+					newSO.y = s.y + newSize;
 
-                    newSE.x = s.x + newSize;
-                    newSE.y = s.y + newSize;
+					newSO = this._clampPoint(newSO.x, newSO.y);
 
-                    newSE = this._clampPoint(newSE.x, newSE.y);
+					this.setSizeByCorners({
+						x: newSO.x,
+						y: s.y
+					}, {
+						x: se.x,
+						y: newSO.y
+					});
 
-                    this.setSizeByCorners({
-                        x: s.x,
-                        y: s.y
-                    }, newSE);
+					cursor = `nesw-resize`;
+					break;
+				case 3: // Bottom Right
 
-                    cursor = 'nwse-resize';
-                    break;
-            }
-            this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
-            res = true;
-            this._events.trigger('area-resize');
-        } else {
-            var hoveredResizeBox = this._isCoordWithinResizeCtrl([mouseCurX, mouseCurY]);
-            if (hoveredResizeBox > -1) {
-                switch (hoveredResizeBox) {
-                    case 0:
-                        cursor = 'nwse-resize';
-                        break;
-                    case 1:
-                        cursor = 'nesw-resize';
-                        break;
-                    case 2:
-                        cursor = 'nesw-resize';
-                        break;
-                    case 3:
-                        cursor = 'nwse-resize';
-                        break;
-                }
-                this._areaIsHover = false;
-                this._resizeCtrlIsHover = hoveredResizeBox;
-                res = true;
-            } else if (this._isCoordWithinArea([mouseCurX, mouseCurY])) {
-                cursor = 'move';
-                this._areaIsHover = true;
-                res = true;
-            }
-        }
+					newSE.x = s.x + newSize;
+					newSE.y = s.y + newSize;
 
-        angular.element(this._ctx.canvas).css({
-            'cursor': cursor
-        });
+					newSE = this._clampPoint(newSE.x, newSE.y);
 
-        return res;
-    };
+					this.setSizeByCorners({
+						x: s.x,
+						y: s.y
+					}, newSE);
 
-    CropAreaSquare.prototype.processMouseDown = function(mouseDownX, mouseDownY) {
-        var isWithinResizeCtrl = this._isCoordWithinResizeCtrl([mouseDownX, mouseDownY]);
-        if (isWithinResizeCtrl > -1) {
-            this._areaIsDragging = false;
-            this._areaIsHover = false;
-            this._resizeCtrlIsDragging = isWithinResizeCtrl;
-            this._resizeCtrlIsHover = isWithinResizeCtrl;
-            this._posResizeStartX = mouseDownX;
-            this._posResizeStartY = mouseDownY;
-            this._posResizeStartSize = this._size;
-            this._events.trigger('area-resize-start');
-        } else if (this._isCoordWithinArea([mouseDownX, mouseDownY])) {
-            this._areaIsDragging = true;
-            this._areaIsHover = true;
-            this._resizeCtrlIsDragging = -1;
-            this._resizeCtrlIsHover = -1;
-            var center = this.getCenterPoint();
-            this._posDragStartX = mouseDownX - center.x;
-            this._posDragStartY = mouseDownY - center.y;
-            this._events.trigger('area-move-start');
-        }
-    };
+					cursor = `nwse-resize`;
+					break;
+			}
+			this._resizeCtrlIsHover = this._resizeCtrlIsDragging;
+			res = true;
+			this._events.trigger(`area-resize`);
+		}else{
+			const hoveredResizeBox = this._isCoordWithinResizeCtrl([mouseCurX, mouseCurY]);
+			if(hoveredResizeBox > -1){
+				switch(hoveredResizeBox){
+					case 0:
+						cursor = `nwse-resize`;
+						break;
+					case 1:
+						cursor = `nesw-resize`;
+						break;
+					case 2:
+						cursor = `nesw-resize`;
+						break;
+					case 3:
+						cursor = `nwse-resize`;
+						break;
+				}
+				this._areaIsHover = false;
+				this._resizeCtrlIsHover = hoveredResizeBox;
+				res = true;
+			}else if(this._isCoordWithinArea([mouseCurX, mouseCurY])){
+				cursor = `move`;
+				this._areaIsHover = true;
+				res = true;
+			}
+		}
 
-    CropAreaSquare.prototype.processMouseUp = function( /*mouseUpX, mouseUpY*/ ) {
-        if (this._areaIsDragging) {
-            this._areaIsDragging = false;
-            this._events.trigger('area-move-end');
-        }
-        if (this._resizeCtrlIsDragging > -1) {
-            this._resizeCtrlIsDragging = -1;
-            this._events.trigger('area-resize-end');
-        }
-        this._areaIsHover = false;
-        this._resizeCtrlIsHover = -1;
+		angular.element(this._ctx.canvas).css({
+			cursor
+		});
 
-        this._posDragStartX = 0;
-        this._posDragStartY = 0;
-    };
+		return res;
+	};
 
+	CropAreaSquare.prototype.processMouseDown = function(mouseDownX, mouseDownY){
+		const isWithinResizeCtrl = this._isCoordWithinResizeCtrl([mouseDownX, mouseDownY]);
+		if(isWithinResizeCtrl > -1){
+			this._areaIsDragging = false;
+			this._areaIsHover = false;
+			this._resizeCtrlIsDragging = isWithinResizeCtrl;
+			this._resizeCtrlIsHover = isWithinResizeCtrl;
+			this._posResizeStartX = mouseDownX;
+			this._posResizeStartY = mouseDownY;
+			this._posResizeStartSize = this._size;
+			this._events.trigger(`area-resize-start`);
+		}else if(this._isCoordWithinArea([mouseDownX, mouseDownY])){
+			this._areaIsDragging = true;
+			this._areaIsHover = true;
+			this._resizeCtrlIsDragging = -1;
+			this._resizeCtrlIsHover = -1;
+			const center = this.getCenterPoint();
+			this._posDragStartX = mouseDownX - center.x;
+			this._posDragStartY = mouseDownY - center.y;
+			this._events.trigger(`area-move-start`);
+		}
+	};
 
-    return CropAreaSquare;
+	CropAreaSquare.prototype.processMouseUp = function(/*mouseUpX, mouseUpY*/){
+		if(this._areaIsDragging){
+			this._areaIsDragging = false;
+			this._events.trigger(`area-move-end`);
+		}
+		if(this._resizeCtrlIsDragging > -1){
+			this._resizeCtrlIsDragging = -1;
+			this._events.trigger(`area-resize-end`);
+		}
+		this._areaIsHover = false;
+		this._resizeCtrlIsHover = -1;
+
+		this._posDragStartX = 0;
+		this._posDragStartY = 0;
+	};
+
+	return CropAreaSquare;
 }
 
 module.exports = cropAreaSquare;

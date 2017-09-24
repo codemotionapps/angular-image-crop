@@ -1,198 +1,199 @@
 function cropCanvas(){
-    // Shape = Array of [x,y]; [0, 0] - center
-    var shapeArrowNW = [
-        [-0.5, -2],
-        [-3, -4.5],
-        [-0.5, -7],
-        [-7, -7],
-        [-7, -0.5],
-        [-4.5, -3],
-        [-2, -0.5]
-    ];
-    var shapeArrowNE = [
-        [0.5, -2],
-        [3, -4.5],
-        [0.5, -7],
-        [7, -7],
-        [7, -0.5],
-        [4.5, -3],
-        [2, -0.5]
-    ];
-    var shapeArrowSW = [
-        [-0.5, 2],
-        [-3, 4.5],
-        [-0.5, 7],
-        [-7, 7],
-        [-7, 0.5],
-        [-4.5, 3],
-        [-2, 0.5]
-    ];
-    var shapeArrowSE = [
-        [0.5, 2],
-        [3, 4.5],
-        [0.5, 7],
-        [7, 7],
-        [7, 0.5],
-        [4.5, 3],
-        [2, 0.5]
-    ];
-    var shapeArrowN = [
-        [-1.5, -2.5],
-        [-1.5, -6],
-        [-5, -6],
-        [0, -11],
-        [5, -6],
-        [1.5, -6],
-        [1.5, -2.5]
-    ];
-    var shapeArrowW = [
-        [-2.5, -1.5],
-        [-6, -1.5],
-        [-6, -5],
-        [-11, 0],
-        [-6, 5],
-        [-6, 1.5],
-        [-2.5, 1.5]
-    ];
-    var shapeArrowS = [
-        [-1.5, 2.5],
-        [-1.5, 6],
-        [-5, 6],
-        [0, 11],
-        [5, 6],
-        [1.5, 6],
-        [1.5, 2.5]
-    ];
-    var shapeArrowE = [
-        [2.5, -1.5],
-        [6, -1.5],
-        [6, -5],
-        [11, 0],
-        [6, 5],
-        [6, 1.5],
-        [2.5, 1.5]
-    ];
+	// Shape = Array of [x,y]; [0, 0] - center
+	const shapeArrowNW = [
+		[-0.5, -2],
+		[-3, -4.5],
+		[-0.5, -7],
+		[-7, -7],
+		[-7, -0.5],
+		[-4.5, -3],
+		[-2, -0.5]
+	];
+	const shapeArrowNE = [
+		[0.5, -2],
+		[3, -4.5],
+		[0.5, -7],
+		[7, -7],
+		[7, -0.5],
+		[4.5, -3],
+		[2, -0.5]
+	];
+	const shapeArrowSW = [
+		[-0.5, 2],
+		[-3, 4.5],
+		[-0.5, 7],
+		[-7, 7],
+		[-7, 0.5],
+		[-4.5, 3],
+		[-2, 0.5]
+	];
+	const shapeArrowSE = [
+		[0.5, 2],
+		[3, 4.5],
+		[0.5, 7],
+		[7, 7],
+		[7, 0.5],
+		[4.5, 3],
+		[2, 0.5]
+	];
+	const shapeArrowN = [
+		[-1.5, -2.5],
+		[-1.5, -6],
+		[-5, -6],
+		[0, -11],
+		[5, -6],
+		[1.5, -6],
+		[1.5, -2.5]
+	];
+	const shapeArrowW = [
+		[-2.5, -1.5],
+		[-6, -1.5],
+		[-6, -5],
+		[-11, 0],
+		[-6, 5],
+		[-6, 1.5],
+		[-2.5, 1.5]
+	];
+	const shapeArrowS = [
+		[-1.5, 2.5],
+		[-1.5, 6],
+		[-5, 6],
+		[0, 11],
+		[5, 6],
+		[1.5, 6],
+		[1.5, 2.5]
+	];
+	const shapeArrowE = [
+		[2.5, -1.5],
+		[6, -1.5],
+		[6, -5],
+		[11, 0],
+		[6, 5],
+		[6, 1.5],
+		[2.5, 1.5]
+	];
 
-    // Colors
-    var colors = {
-        areaOutline: '#fff',
-        resizeBoxStroke: '#bababa',
-        resizeBoxFill: '#444',
-        resizeBoxArrowFill: '#fff',
-        resizeCircleStroke: '#bababa',
-        resizeCircleFill: '#444',
-        moveIconFill: '#fff'
-    };
+	// Colors
+	const colors = {
+		areaOutline: `#fff`,
+		resizeBoxStroke: `#bababa`,
+		resizeBoxFill: `#444`,
+		resizeBoxArrowFill: `#fff`,
+		resizeCircleStroke: `#bababa`,
+		resizeCircleFill: `#444`,
+		moveIconFill: `#fff`
+	};
 
-    var cropper = {
-        strokeWidth: 1
-    };
+	const cropper = {
+		strokeWidth: 1
+	};
 
-    return function(ctx) {
+	return function(ctx){
+		/* Base functions */
 
-        /* Base functions */
+		// Calculate Point
+		const calcPoint = function(point, offset, scale){
+			return [(scale * point[0]) + offset[0], (scale * point[1]) + offset[1]];
+		};
 
-        // Calculate Point
-        var calcPoint = function(point, offset, scale) {
-            return [scale * point[0] + offset[0], scale * point[1] + offset[1]];
-        };
+		// Draw Filled Polygon
+		const drawFilledPolygon = function(shape, fillStyle, centerCoords, scale){
+			ctx.save();
+			ctx.fillStyle = fillStyle;
+			ctx.beginPath();
+			let pc;
+			const pc0 = calcPoint(shape[0], centerCoords, scale);
+			ctx.moveTo(pc0[0], pc0[1]);
 
-        // Draw Filled Polygon
-        var drawFilledPolygon = function(shape, fillStyle, centerCoords, scale) {
-            ctx.save();
-            ctx.fillStyle = fillStyle;
-            ctx.beginPath();
-            var pc, pc0 = calcPoint(shape[0], centerCoords, scale);
-            ctx.moveTo(pc0[0], pc0[1]);
+			for(const p in shape){
+				if(p > 0){
+					pc = calcPoint(shape[p], centerCoords, scale);
+					ctx.lineTo(pc[0], pc[1]);
+				}
+			}
 
-            for (var p in shape) {
-                if (p > 0) {
-                    pc = calcPoint(shape[p], centerCoords, scale);
-                    ctx.lineTo(pc[0], pc[1]);
-                }
-            }
+			ctx.lineTo(pc0[0], pc0[1]);
+			ctx.fill();
+			ctx.closePath();
+			ctx.restore();
+		};
 
-            ctx.lineTo(pc0[0], pc0[1]);
-            ctx.fill();
-            ctx.closePath();
-            ctx.restore();
-        };
+		/* Icons */
 
+		this.drawIconMove = function(centerCoords, scale){
+			drawFilledPolygon(shapeArrowN, colors.moveIconFill, centerCoords, scale);
+			drawFilledPolygon(shapeArrowW, colors.moveIconFill, centerCoords, scale);
+			drawFilledPolygon(shapeArrowS, colors.moveIconFill, centerCoords, scale);
+			drawFilledPolygon(shapeArrowE, colors.moveIconFill, centerCoords, scale);
+		};
 
-        /* Icons */
+		this.drawIconResizeCircle = function(centerCoords, circleRadius, scale){
+			const scaledCircleRadius = circleRadius * scale;
+			ctx.save();
+			ctx.strokeStyle = colors.resizeCircleStroke;
+			ctx.lineWidth = cropper.strokeWidth;
+			ctx.fillStyle = colors.resizeCircleFill;
+			ctx.beginPath();
+			ctx.arc(centerCoords[0], centerCoords[1], scaledCircleRadius, 0, 2 * Math.PI);
+			ctx.fill();
+			ctx.stroke();
+			ctx.closePath();
+			ctx.restore();
+		};
 
-        this.drawIconMove = function(centerCoords, scale) {
-            drawFilledPolygon(shapeArrowN, colors.moveIconFill, centerCoords, scale);
-            drawFilledPolygon(shapeArrowW, colors.moveIconFill, centerCoords, scale);
-            drawFilledPolygon(shapeArrowS, colors.moveIconFill, centerCoords, scale);
-            drawFilledPolygon(shapeArrowE, colors.moveIconFill, centerCoords, scale);
-        };
+		this.drawIconResizeBoxBase = function(centerCoords, boxSize, scale){
+			const scaledBoxSize = boxSize * scale;
+			ctx.save();
+			ctx.strokeStyle = colors.resizeBoxStroke;
+			ctx.lineWidth = cropper.strokeWidth;
+			ctx.fillStyle = colors.resizeBoxFill;
 
-        this.drawIconResizeCircle = function(centerCoords, circleRadius, scale) {
-            var scaledCircleRadius = circleRadius * scale;
-            ctx.save();
-            ctx.strokeStyle = colors.resizeCircleStroke;
-            ctx.lineWidth = cropper.strokeWidth;
-            ctx.fillStyle = colors.resizeCircleFill;
-            ctx.beginPath();
-            ctx.arc(centerCoords[0], centerCoords[1], scaledCircleRadius, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.stroke();
-            ctx.closePath();
-            ctx.restore();
-        };
+			const halfScaledBoxSize = scaledBoxSize / 2;
+			ctx.fillRect(centerCoords[0] - halfScaledBoxSize, centerCoords[1] - halfScaledBoxSize, scaledBoxSize, scaledBoxSize);
+			ctx.strokeRect(centerCoords[0] - halfScaledBoxSize, centerCoords[1] - halfScaledBoxSize, scaledBoxSize, scaledBoxSize);
+			ctx.restore();
+		};
+		this.drawIconResizeBoxNESW = function(centerCoords, boxSize, scale){
+			this.drawIconResizeBoxBase(centerCoords, boxSize, scale);
+			drawFilledPolygon(shapeArrowNE, colors.resizeBoxArrowFill, centerCoords, scale);
+			drawFilledPolygon(shapeArrowSW, colors.resizeBoxArrowFill, centerCoords, scale);
+		};
+		this.drawIconResizeBoxNWSE = function(centerCoords, boxSize, scale){
+			this.drawIconResizeBoxBase(centerCoords, boxSize, scale);
+			drawFilledPolygon(shapeArrowNW, colors.resizeBoxArrowFill, centerCoords, scale);
+			drawFilledPolygon(shapeArrowSE, colors.resizeBoxArrowFill, centerCoords, scale);
+		};
 
-        this.drawIconResizeBoxBase = function(centerCoords, boxSize, scale) {
-            var scaledBoxSize = boxSize * scale;
-            ctx.save();
-            ctx.strokeStyle = colors.resizeBoxStroke;
-            ctx.lineWidth = cropper.strokeWidth;
-            ctx.fillStyle = colors.resizeBoxFill;
-            ctx.fillRect(centerCoords[0] - scaledBoxSize / 2, centerCoords[1] - scaledBoxSize / 2, scaledBoxSize, scaledBoxSize);
-            ctx.strokeRect(centerCoords[0] - scaledBoxSize / 2, centerCoords[1] - scaledBoxSize / 2, scaledBoxSize, scaledBoxSize);
-            ctx.restore();
-        };
-        this.drawIconResizeBoxNESW = function(centerCoords, boxSize, scale) {
-            this.drawIconResizeBoxBase(centerCoords, boxSize, scale);
-            drawFilledPolygon(shapeArrowNE, colors.resizeBoxArrowFill, centerCoords, scale);
-            drawFilledPolygon(shapeArrowSW, colors.resizeBoxArrowFill, centerCoords, scale);
-        };
-        this.drawIconResizeBoxNWSE = function(centerCoords, boxSize, scale) {
-            this.drawIconResizeBoxBase(centerCoords, boxSize, scale);
-            drawFilledPolygon(shapeArrowNW, colors.resizeBoxArrowFill, centerCoords, scale);
-            drawFilledPolygon(shapeArrowSE, colors.resizeBoxArrowFill, centerCoords, scale);
-        };
+		/* Crop Area */
 
-        /* Crop Area */
+		this.drawCropArea = function(image, centerCoords, size, fnDrawClipPath){
+			const xRatio = Math.abs(image.width / ctx.canvas.width);
+			const yRatio = Math.abs(image.height / ctx.canvas.height);
+			const xLeft = Math.abs(centerCoords.x - (size.w / 2));
+			const yTop = Math.abs(centerCoords.y - (size.h / 2));
 
-        this.drawCropArea = function(image, centerCoords, size, fnDrawClipPath) {
-            var xRatio = Math.abs(image.width / ctx.canvas.width),
-                yRatio = Math.abs(image.height / ctx.canvas.height),
-                xLeft = Math.abs(centerCoords.x - size.w / 2),
-                yTop = Math.abs(centerCoords.y - size.h / 2);
+			ctx.save();
+			ctx.strokeStyle = colors.areaOutline;
+			ctx.lineWidth = cropper.strokeWidth;
+			ctx.setLineDash([5, 5]);
+			ctx.beginPath();
+			fnDrawClipPath(ctx, centerCoords, size);
+			ctx.stroke();
+			ctx.clip();
 
-            ctx.save();
-            ctx.strokeStyle = colors.areaOutline;
-            ctx.lineWidth = cropper.strokeWidth;
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            fnDrawClipPath(ctx, centerCoords, size);
-            ctx.stroke();
-            ctx.clip();
+			// draw part of original image
+			if(size.w > 0){
+				ctx.drawImage(image, xLeft * xRatio, yTop * yRatio, Math.abs(size.w * xRatio), Math.abs(size.h * yRatio), xLeft, yTop, Math.abs(size.w), Math.abs(size.h));
+			}
 
-            // draw part of original image
-            if (size.w > 0) {
-                ctx.drawImage(image, xLeft * xRatio, yTop * yRatio, Math.abs(size.w * xRatio), Math.abs(size.h * yRatio), xLeft, yTop, Math.abs(size.w), Math.abs(size.h));
-            }
+			ctx.beginPath();
+			fnDrawClipPath(ctx, centerCoords, size);
+			ctx.stroke();
+			ctx.clip();
 
-            ctx.beginPath();
-            fnDrawClipPath(ctx, centerCoords, size);
-            ctx.stroke();
-            ctx.clip();
-
-            ctx.restore();
-        };
-    };
+			ctx.restore();
+		};
+	};
 }
 
 module.exports = cropCanvas;
